@@ -1,0 +1,14 @@
+{
+  "keys": [
+    "intake",
+    "conversion",
+    "pairing",
+    "auction",
+    "correction",
+    "reconcile",
+    "archive"
+  ],
+  "market": "东港水产",
+  "currency": "CNY",
+  "weight_unit": "kg"
+}
