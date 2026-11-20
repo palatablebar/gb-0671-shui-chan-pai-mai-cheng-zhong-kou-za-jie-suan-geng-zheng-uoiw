@@ -10,9 +10,10 @@
     "扣杂竞价",
     "更正裁决",
     "应付对账",
+    "船户归户",
     "结算归档"
   ],
-  "rule": "双次称重先配对，再按品类扣杂；更正只能替代指定版本，禁止重复支付",
+  "rule": "双次称重先配对，再按品类扣杂；更正只能替代指定版本，禁止重复支付；船户归户以证件尾号为准，同名多证不并票",
   "lane": "L1",
   "bg": "深海墨蓝",
   "hue": "青188°",
@@ -29,6 +30,7 @@
     "auction",
     "correction",
     "reconcile",
+    "attribution",
     "archive"
   ],
   "labels": {
@@ -51,7 +53,7 @@
     "replaces": "替代版本",
     "code": "原因码",
     "detail": "原因",
-    "kind": "称重类型",
+    "kind": "归户方式",
     "weight": "原始重量",
     "unit": "原始单位",
     "weight_kg": "规范重量 kg",
@@ -63,6 +65,22 @@
     "repeated_header": "重复表头",
     "row_balanced": "行守恒",
     "money_balanced": "金额守恒",
-    "blocked": "阻断项"
+    "blocked": "阻断项",
+    "boat": "船名",
+    "id_tail": "证件尾号",
+    "owner_label": "归户对象",
+    "owner_key": "归户键",
+    "tickets": "并入票",
+    "ticket_count": "票数",
+    "codes": "归户原因码",
+    "status": "结算状态",
+    "provisional_tickets": "临时补证票",
+    "evidence_lines": "证据行",
+    "raw_lines": "逐行证据",
+    "candidate_id_tails": "候选证件尾号",
+    "payable": "可付 CNY",
+    "held": "暂存 CNY",
+    "conserved": "守恒",
+    "difference": "差额 CNY"
   }
 }

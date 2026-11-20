@@ -2,12 +2,19 @@ import sqlite3, json
 from pathlib import Path
 from app.errors import BusinessError
 
+SCHEMA = (
+    "CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, digest TEXT UNIQUE NOT NULL, result TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 1, status TEXT NOT NULL DEFAULT '待复核')",
+    "CREATE TABLE IF NOT EXISTS publications (digest TEXT PRIMARY KEY, run_id TEXT NOT NULL, revision INTEGER NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL, voucher TEXT NOT NULL, updated_at TEXT NOT NULL)",
+    "CREATE TABLE IF NOT EXISTS households (digest TEXT NOT NULL, run_id TEXT NOT NULL, owner_key TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL, PRIMARY KEY (digest, owner_key))",
+    "CREATE TABLE IF NOT EXISTS vouchers (id TEXT PRIMARY KEY, bytes BLOB NOT NULL, created_at TEXT NOT NULL)",
+)
+
 def connect(path):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     con=sqlite3.connect(path,timeout=15)
     con.row_factory=sqlite3.Row
     con.execute('PRAGMA journal_mode=WAL')
-    con.execute("CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, digest TEXT UNIQUE NOT NULL, result TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 1, status TEXT NOT NULL DEFAULT '待复核')")
+    for statement in SCHEMA: con.execute(statement)
     return con
 
 def save(path, result):

@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import ROOT, META, MODULES, DB_PATH
 from app.errors import BusinessError
 from app.engine import evaluate
-from app import store
+from app import store, settlement
 from app.archive import serialize
 
 @asynccontextmanager
@@ -48,5 +48,23 @@ def review(run_id:str,payload:dict=Body(...)):
 def export(run_id:str):
     result=store.get(DB_PATH,run_id)
     return Response(serialize(result),media_type='application/zip',headers={'Content-Disposition':f'attachment; filename="{run_id}.zip"'})
+@app.post('/api/runs/{run_id}/publish')
+def publish(run_id:str,payload:dict=Body(default={})):
+    result=store.get(DB_PATH,run_id)
+    revision=payload.get('revision')
+    if revision is not None and (not isinstance(revision,int) or revision<1): raise BusinessError('BAD_REVISION','版本号须为正整数')
+    return settlement.publish(DB_PATH,result,expected_revision=revision)
+@app.get('/api/runs/{run_id}/publication')
+def publication(run_id:str):
+    result=store.get(DB_PATH,run_id)
+    found=settlement.publication(DB_PATH,result['manifest']['sha256'])
+    return found or {'status':'未发布'}
+@app.get('/api/vouchers')
+def voucher_list():
+    return settlement.vouchers(DB_PATH)
+@app.get('/api/vouchers/{voucher_id}')
+def voucher_download(voucher_id:str):
+    raw=settlement.voucher_bytes(DB_PATH,voucher_id)
+    return Response(raw,media_type='text/csv; charset=utf-8',headers={'Content-Disposition':f'attachment; filename="{voucher_id}.csv"'})
 for key in MODULES:
     app.include_router(import_module(f'app.modules.{key}.handler').router)
